@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+
+{% block content-header %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="grid">
+            <div class="span12" style="margin: 0 auto; text-align: center;">
+            </div>
+            <form class="row span12" style="margin: 0 auto;">
+                <fieldset>
+                    <legend>What "Will" you like today?</legend>
+                    <label>Your Full Name:</label>
+                    <div class="input-control text size4" data-role="input-control">
+                        <input type="text" placeholder="Samuel Chinnaswamy">
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                    <label>Son of/Wife of - (name of male dependent):</label>
+                    <div class="input-control text size4" data-role="input-control">
+                        <input type="text" placeholder="Mr. Anna Chinnaswamy">
+                        <!--input type="password" placeholder="type password" autofocus=""-->
+                        <button class="btn-reveal" tabindex="-1" type="button"></button>
+                    </div>
+                    <label>Permanent Address:</label>
+                    <div class="input-control text" data-role="input-control">
+                        <input type="text" placeholder="B-6, Chattrapati Kunj, Ajmer, xxxxxx">
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                    <br />
+                    <br />
+                    <label class="span2"> Age (in years): </label>
+                    <div class="input-control text size1 span1" data-role="input-control">
+                        <input type="text" placeholder="54">
+                    </div>
+
+                    <label class="span4"> No. of properties (residential or commercial): </label>
+                    <div class="input-control text size1 span1" data-role="input-control">
+                        <input id="numprop" type="text" placeholder="2">
+                    </div>
+                    <div id="propplace">
+
+                    </div>
+                    &nbsp; &nbsp; &nbsp; &nbsp; <button id="numpropbut" class="large" onclick=""> Add properties: </button>
+                    <div id="propwindow" class="tile quadro" style="margin: 10px; height: 21em; display: none;">
+                        <div class="container" style="margin: 10px;">
+                            <label> Property </label>
+                            <div>
+                                <div class="input-control radio default-style" data-role="input-control">
+                                    <label>
+                                        <input type="radio" name="r1" checked="">
+                                        <span class="check"></span>
+                                        Residential
+                                    </label>
+                                </div>
+                                &nbsp; &nbsp;
+                                <div class="input-control radio  default-style" data-role="input-control">
+                                    <label>
+                                        <input type="radio" name="r1">
+                                        <span class="check"></span>
+                                        Commercial
+                                    </label>
+                                </div>
+                                <label> Beneficiary: </label>
+                                <div class="input-control text" data-role="input-control">
+                                    <input type="text" placeholder="Mr. Anna Chinnaswamy">
+                                    <button class="btn-reveal" tabindex="-1" type="button"></button>
+                                </div>
+
+                                <label> Address: </label>
+                                <div class="input-control textarea" data-role="input-control">
+                                    <textarea> </textarea>
+                                </div>
+                                <br />
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <legend>Jewelry</legend>
+
+                    <div class="tile quadro" style="margin: 10px; height: 18em; display: none;">
+                        <div class="container" style="margin: 10px;">
+                            <label> Jewelry </label>
+                            <div>
+                                <label> Beneficiary: </label>
+                                <div class="input-control text" data-role="input-control">
+                                    <input type="text" placeholder="Mr. Anna Chinnaswamy">
+                                    <button class="btn-reveal" tabindex="-1" type="button"></button>
+                                </div>
+                                <label> Detailed Description: </label>
+                                <div class="input-control textarea" data-role="input-control">
+                                    <textarea> </textarea>
+                                </div>
+                                <br />
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var totprop = 0;
+        $("#numpropbut").click(function(){
+            var i = document.getElementById('numprop').value;
+            totprop += i;
+            if (totprop > 10) {
+                alert("We do not support more than 10 properties.")
+                return false;
+            }
+            if (i > 0) {
+                for (j = 0; j < i; j++) {
+                    var propbox = $("#propwindow").clone();
+                    var sum = parseInt(j) + parseInt(totprop);
+                    propbox.attr("id","propwindow" + sum);
+                    propbox.appendTo("#propplace");
+                    var lab = propbox.find("label:first");
+                    propbox.show();
+                }
+            }
+            return false;
+        })
+    </script>
+{% endblock %}
+
+
