@@ -110,6 +110,14 @@ WSGI_APPLICATION = 'willingly.wsgi.application'
 import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)
 
+PROJECT_DIR = os.path.dirname(__file__)
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = ''
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (('core/static'),)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
