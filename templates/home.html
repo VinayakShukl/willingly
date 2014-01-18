@@ -10,11 +10,11 @@
             <form method="POST" action="/" enctype="multipart/form-data" class="row span12" style="margin: 0 auto;">
                 {% csrf_token %}
                 <fieldset>
-                    <legend>What "Will" you like today?</legend>
+                    <legend style="margin-top: 60px">What "Will" you like today?</legend>
 
-                    <div class="row">
+                    <div class="row" style="margin-top: -10px">
                         <div class="span10">
-                            <label>Your Full Name:</label>
+                            <label >Your Full Name:</label>
 
                             <div class="input-control text size10" data-role="input-control">
                                 <input type="text" placeholder="Samuel Chinnaswamy" name="name">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <legend>Properties</legend>
+                    <legend style="margin-top: 30px;">Properties</legend>
                     <div class="row">
                         <label class="span4">No. of properties (residential or commercial): </label>
 
@@ -96,7 +96,7 @@
                         </div>
                         <div class="span4 offset2">
                             <div style="float: right">
-                                <button id="numpropbut" style="line-height: normal" onclick="">Add properties:</button>
+                                <button class="btn" id="numpropbut" onclick="">Add properties</button>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                     </div>
                     <div id="propwindow" class="tile quadro" style="margin: 10px; height: 21em; display: none;">
                         <div class="container" style="margin: 10px;">
-                            <label> Property </label>
+                            <label > Property </label>
 
                             <div>
                                 <div class="input-control radio default-style" data-role="input-control">
