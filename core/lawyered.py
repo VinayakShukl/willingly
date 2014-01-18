@@ -2,6 +2,8 @@ __author__ = 'aditya'
 
 from tex import *
 from datetime import datetime
+import copy
+
 
 will = r"""\documentclass{article}
 
@@ -35,7 +37,7 @@ will = r"""\documentclass{article}
 
 \vspace{0.5in}
 
-\noindent \textbox{\large I, \#name\#, son/wife of \#dependent\#, resident of: \#address\#, age \#age\# years, am making this will on the day of \#date\# out of my free volition and without any coercion or undue influence whatsoever; and state that this is my last will and that I hereby revoke all Wills and codicil made by me at any time heretoforce, I bequeath my property, interests and other rights as follows.}
+\noindent \textbox{\large I, \#name\#, son/wife of \#dependent\#, resident of: \#address\#, age \#age\# years, am making this will on the day of \#date\# out of my free volition and without any coercion or undue influence whatsoever; and state that this is my last will and that I hereby revoke all wills and codicil made by me at any time heretoforce, I bequeath my property, interests and other rights as follows.}
 
 \vspace{0.3in}
 
@@ -72,6 +74,7 @@ def check(feed):
 
 def fillin(d):
     global will
+    will = copy.deepcopy(will)
     will = will.replace("\#name\#", check(d['name']))
     will = will.replace("\#dependent\#", check(d['dependent']))
     will = will.replace("\#address\#", check(d['address']))
@@ -79,9 +82,3 @@ def fillin(d):
     will = will.replace("\#date\#", datetime.now().strftime(format("%A, %dth of %B, %Y")))
     return latex2pdf(will)
 
-
-a = fillin({'name':"Aditya Gupta", 'dependent':'Suresh Chandra Gupta', 'address':'A-6, Tower 7, New Moti Bagh, Chanakya Puri, New Delhi 110023', 'age':'21'})
-f = open("test.pdf", "w")
-f.write(a)
-f.close()
-print "Done!"
