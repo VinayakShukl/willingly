@@ -118,6 +118,10 @@ STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (('core/static'),)
 
+MEDIA_ROOT = ''
+MEDIA_URL = '/media/'
+MEDIAFILES_DIR = (('core/media'),)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

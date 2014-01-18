@@ -7,7 +7,7 @@
         <div class="grid">
             <div class="span12" style="margin: 0 auto; text-align: center;">
             </div>
-            <form method="POST" action="/" class="row span12" style="margin: 0 auto;">
+            <form method="POST" action="/" enctype="multipart/form-data" class="row span12" style="margin: 0 auto;">
                 {% csrf_token %}
                 <fieldset>
                     <legend>What "Will" you like today?</legend>
@@ -44,10 +44,45 @@
                     <div class="row">
                         <div class="span12">
                             <label>Permanent Address:</label>
+                        </div>
+                    </div>
 
+                    <div class="row" style="margin-top: 0">
+                        <div class="span3">
                             <div class="input-control text" data-role="input-control">
-                                <input type="text" placeholder="B-6, Chattrapati Kunj, Ajmer, xxxxxx" name="address">
-                                <button class="btn-clear" tabindex="-1" type="button"></button>
+                                <input type="text" placeholder="Apartment" name="address">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 0">
+                        <div class="span6">
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" placeholder="Street Name" name="street_name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 0">
+                        <div class="span3">
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" placeholder="City" name="city">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 0">
+                        <div class="span3">
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" placeholder="State" name="state">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row " style="margin-top: 0">
+                        <div class="span2">
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" placeholder="PIN" name="pin">
                             </div>
                         </div>
                     </div>
@@ -67,10 +102,11 @@
                     </div>
 
                     <div id="propplace">
-                        </div>
+                    </div>
                     <div id="propwindow" class="tile quadro" style="margin: 10px; height: 21em; display: none;">
                         <div class="container" style="margin: 10px;">
                             <label> Property </label>
+
                             <div>
                                 <div class="input-control radio default-style" data-role="input-control">
                                     <label>
@@ -105,35 +141,13 @@
                             </div>
                         </div>
                     </div>
-{#                    <legend>Jewelry</legend>#}
-{##}
-{#                    <div class="tile quadro" style="margin: 10px; height: 18em; display: none;">#}
-{#                        <div class="container" style="margin: 10px;">#}
-{#                            <label> Jewelry </label>#}
-{##}
-{#                            <div>#}
-{#                                <label> Beneficiary: </label>#}
-{##}
-{#                                <div class="input-control text" data-role="input-control">#}
-{#                                    <input type="text" placeholder="Mr. Anna Chinnaswamy">#}
-{#                                    <button class="btn-reveal" tabindex="-1" type="button"></button>#}
-{#                                </div>#}
-{#                                <label> Detailed Description: </label>#}
-{##}
-{#                                <div class="input-control textarea" data-role="input-control">#}
-{#                                    <textarea> </textarea>#}
-{#                                </div>#}
-{#                                <br/>#}
-{#                                <br/>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
+
                     <legend>Jewellery</legend>
                     <div class="row">
                         <label class="span4">No. of jewellery items: </label>
 
                         <div class="input-control text size2 span2" data-role="input-control">
-                            <input id="numprop" type="text" placeholder="2" name="jewel_num">
+                            <input id="numjewel" type="text" placeholder="2" name="jewel_num">
                         </div>
                         <div class="span4 offset2">
                             <div style="float: right">
@@ -147,28 +161,33 @@
                     <div id="jewelwindow" class="tile quadro" style="margin: 10px; height: 21em; display: none;">
                         <div class="container" style="margin: 10px;">
                             <label> Jewellery Item </label>
+
                             <div>
                                 <label> Beneficiary: </label>
+
                                 <div class="input-control text" data-role="input-control">
-                                    <input type="text" placeholder="Mr. Anna Chinnaswamy" name="benef">
+                                    <input type="text" placeholder="Mr. Anna Chinnaswamy" name="jewel-benef">
                                     <button class="btn-reveal" tabindex="-1" type="button"></button>
                                 </div>
 
                                 <label> Description: </label>
+
                                 <div class="input-control textarea" data-role="input-control">
                                     <textarea name="jewel-desc"> </textarea>
+                                </div>
+
+                                <div class="input-control textarea" data-role="input-control">
+                                    <input type="file" name="pic" accept="image/*">
                                 </div>
                                 <br/>
                                 <br/>
                             </div>
                         </div>
                     </div>
-
-
                 </fieldset>
                 <div class="row">
                     <div class="sapn4">
-                        <input type="submit" value="POST">
+                        <input type="submit" value="POST" onclick=submit_post()>
                     </div>
                 </div>
             </form>
@@ -179,28 +198,62 @@
 {% block js %}
     <script>
         var totprop = 0;
+        var totjewel = 0;
+
+        var last_prop_id = 0;
+        var last_jewel_id = 0;
+
         $("#numpropbut").click(function () {
             var i = document.getElementById('numprop').value;
             totprop += parseInt(i);
             if (totprop > 10) {
                 alert("We do not support more than 10 properties.");
+                totprop -= parseInt(i);
                 return false;
             }
             if (i > 0) {
                 for (j = 0; j < i; j++) {
+                    last_prop_id += 1;
                     var propbox = $("#propwindow").clone();
-                    var sum = parseInt(j) + parseInt(totprop);
+                    var sum = last_prop_id;
                     propbox.attr("id", "propwindow" + sum);
                     propbox.appendTo("#propplace");
                     propbox.show();
                     var eleList = document.querySelectorAll("#propwindow" + sum + " .radio-btn");
                     for (var k = 0; k < eleList.length; k++) {
-                        eleList[k].name = (j + 1).toString();
+                        eleList[k].name = last_prop_id.toString();
                     }
                 }
             }
             return false;
         })
+
+        $("#numjewelbut").click(function () {
+            var i = document.getElementById('numjewel').value;
+            totjewel += parseInt(i);
+            if (totjewel > 10) {
+                alert("We do not support more than 10 jewels.");
+                totjewel -= parseInt(i);
+                return false;
+            }
+            if (i > 0) {
+                for (j = 0; j < i; j++) {
+                    last_jewel_id += 1;
+                    var jewelbox = $("#jewelwindow").clone();
+                    var sum = last_jewel_id;
+                    jewelbox.attr("id", "jewelwindow" + sum);
+                    jewelbox.appendTo("#jewelplace");
+                    jewelbox.show();
+                }
+            }
+            return false;
+        })
+
+        function submit_post() {
+            document.getElementById('numprop').value = totprop;
+            document.getElementById('numjewel').value = totjewel;
+        }
+
     </script>
 {% endblock %}
 
