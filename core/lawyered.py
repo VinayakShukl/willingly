@@ -2,10 +2,12 @@ __author__ = 'aditya'
 
 from tex import *
 from datetime import datetime
-import copy
+import copy, os
 
 
 will = r"""\documentclass{article}
+
+\usepackage{graphicx}
 
 \oddsidemargin=0.0in
 
@@ -56,17 +58,26 @@ will = r"""\documentclass{article}
 
 \#props\#
 
+\#jewels\#
+
 \end{document}
 """.decode('utf-8')
 
 prop = r"""
-\textbox{ $\bullet$ \large I bequeath on my death to \#benefactor\# ,my title interests and all other rights which I have as owner of the \#rescom\# Property at \#propaddress\# , I hereby sate that he shall been titled to use and enjoy the said property at his own will after my death.}
+\textbox{\large $\bullet$ \large I bequeath on my death to \#benefactor\# ,my title interests and all other rights which I have as owner of the \#rescom\# Property at \#propaddress\# , I hereby sate that he shall been titled to use and enjoy the said property at his own will after my death.}
 \vspace{0.3in}
+
 """.decode('utf-8')
 
 jewel = r"""
-$\bullet$ { \large I bequeath on my death the following ornaments and jewellery belonging to me to \#jewname\#.}
+\textbox{\large $\bullet$ \large I bequeath on my death the following ornaments and jewellery belonging to me to \#jewname\#: \#description\#}
 \vspace{0.3in}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=90mm]{\#imgpath\#}
+\caption{A simple caption}
+\label{overflow}
+\end{figure}
 """.decode('utf-8')
 
 def check(feed):
@@ -86,7 +97,9 @@ def check(feed):
     return feed
 
 def fillin(d):
-    global will, prop
+    global will
+    global prop
+    global jewel
     will = copy.deepcopy(will)
     will = will.replace("\#name\#", check(d['name']))
     will = will.replace("\#dependent\#", check(d['dependent']))
@@ -96,8 +109,7 @@ def fillin(d):
 
     propsfil = r""" """
     if len(d['properties']):
-        propsfil += r"""
-\newpage
+        propsfil += r"""\noindent \textbox{\Large \textbf{Properties}}
         """
         for i in range(len(d['properties'])):
             propin = d['properties'][i+1]
@@ -111,6 +123,21 @@ def fillin(d):
             propsfil += proptemp
     print propsfil
     will = will.replace("\#props\#", propsfil)
+
+    jewfil = r""" """
+    if len(d['jewels']):
+        jewfil += r"""\noindent \textbox{\Large \textbf{Jewellery}}
+                \vspace{0.3in}"""
+
+        for i in range(len(d['jewels'])):
+            jewin = d['jewels'][i+1]
+            jewtemp = copy.deepcopy(jewel)
+            jewtemp = jewtemp.replace("\#jewname\#", check(jewin['beneficiary']))
+            jewtemp = jewtemp.replace("\#description\#", check(jewin['description']))
+            jewtemp = jewtemp.replace("\#imgpath\#", check(os.path.abspath(jewin['file_path'])))
+            jewfil += jewtemp
+        print jewfil
+    will = will.replace("\#jewels\#", jewfil)
 
     return latex2pdf(will)
 
