@@ -1,5 +1,5 @@
 __author__ = 'Aditya'
-
+from django.core.cache import cache
 import os, lawyered, StringIO
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -8,13 +8,15 @@ from django.core.servers.basehttp import FileWrapper
 
 def home(request):
     if request.method == "POST":
+        print '\nHERE\n'
+        cache.clear()
         qd = request.POST
         post = dict(qd.iterlists())
         will_info = {'name': post['name'][0], 'age': post['age'][0], 'dependent': post['dependent'][0]}
         address = {'address': post['address'], 'street_name': post['street_name'], 'city': post['city'],
                    'state': post['state'], 'pin': 0 if post['pin'][0] == '' else int(post['pin'][0])}
         will_info['address'] = address['address'][0] + ", " + address['street_name'][0] + ", " + \
-                                address['city'][0] + ", " + address['state'][0] + ", " + str(address['pin'])
+                               address['city'][0] + ", " + address['state'][0] + ", " + str(address['pin'])
 
         properties = {}
         for i in range(1, int(post['prop_num'][0]) + 1):
@@ -23,19 +25,45 @@ def home(request):
         will_info['properties'] = properties
 
         jewels = {}
+        clear_media()
         for i in range(1, int(post['jewel_num'][0]) + 1):
             file_path = None
-            if request.FILES['pic']:
-                file_path = 'core/media/' + 'jewel_' + str(i) + '.jpeg'
-                store_file(request.FILES['pic'], file_path)
-            jewels[i] = {'beneficiary': post['jewel-benef'][i - 1], 'description': post['jewel-desc'][i - 1],
-                         'file_path': file_path}
+            print request.FILES
+            if 'pic' in request.FILES:
+                if request.FILES['pic']:
+                    file_path = 'core/media/' + 'jewel' + str(i) + '.jpeg'
+                    store_file(request.FILES['pic'], file_path)
+                jewels[i] = {'beneficiary': post['jewel-benef'][i - 1], 'description': post['jewel-desc'][i - 1],
+                             'file_path': file_path}
         will_info['jewels'] = jewels
-        print will_info
+
+        f = open('core/media/mywill.pdf', 'w')
+        f.write(lawyered.fillin(will_info))
+        f.close()
+
+        from django.http import HttpResponse
+        from django.core.servers.basehttp import FileWrapper
+
+        # myfile = open('core/media/mywill.pdf', 'r')
+        # response = HttpResponse(FileWrapper(myfile), content_type='application/pdf')
+        # response['Content-Disposition'] = 'attachment; filename=mywill.pdf'
+        # return response
+
         response = HttpResponse(mimetype='application/pdf', content_type='application/pdf')
         response.write(lawyered.fillin(will_info))
         return response
     return render(request, "home.html")
+
+
+def clear_media():
+    folder = 'core/media/'
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception, e:
+            print e
 
 
 def store_file(file_obj, path):
@@ -44,3 +72,5 @@ def store_file(file_obj, path):
         for chunk in file_obj.chunks():
             destination.write(chunk)
 
+def success(request):
+    return render(request, 'success.html')
