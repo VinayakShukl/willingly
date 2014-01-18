@@ -13,7 +13,6 @@ def home(request):
         will_info = {'name': post['name'][0], 'age': post['age'][0], 'dependent': post['dependent'][0]}
         address = {'address': post['address'], 'street_name': post['street_name'], 'city': post['city'],
                    'state': post['state'], 'pin': 0 if post['pin'][0] == '' else int(post['pin'][0])}
-        print will_info
         will_info['address'] = address['address'][0] + ", " + address['street_name'][0] + ", " + \
                                 address['city'][0] + ", " + address['state'][0] + ", " + str(address['pin'])
 
@@ -32,6 +31,7 @@ def home(request):
             jewels[i] = {'beneficiary': post['jewel-benef'][i - 1], 'description': post['jewel-desc'][i - 1],
                          'file_path': file_path}
         will_info['jewels'] = jewels
+        print will_info
         response = HttpResponse(mimetype='application/pdf', content_type='application/pdf')
         response.write(lawyered.fillin(will_info))
         return response

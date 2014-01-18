@@ -7,8 +7,6 @@ import copy
 
 will = r"""\documentclass{article}
 
-\topmargin=3.0in
-
 \oddsidemargin=0.0in
 
 \evensidemargin=0in
@@ -32,6 +30,9 @@ will = r"""\documentclass{article}
 \begin{document}
 
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------
+.
+
+\vspace{2.5in}
 
 \centerline{\huge \textbf{Last Will Testament}}
 
@@ -53,7 +54,19 @@ will = r"""\documentclass{article}
 
 \vspace{0.3in}
 
+\#props\#
+
 \end{document}
+""".decode('utf-8')
+
+prop = r"""
+\textbox{ $\bullet$ \large I bequeath on my death to \#benefactor\# ,my title interests and all other rights which I have as owner of the \#rescom\# Property at \#propaddress\# , I hereby sate that he shall been titled to use and enjoy the said property at his own will after my death.}
+\vspace{0.3in}
+""".decode('utf-8')
+
+jewel = r"""
+$\bullet$ { \large I bequeath on my death the following ornaments and jewellery belonging to me to \#jewname\#.}
+\vspace{0.3in}
 """.decode('utf-8')
 
 def check(feed):
@@ -73,12 +86,31 @@ def check(feed):
     return feed
 
 def fillin(d):
-    global will
+    global will, prop
     will = copy.deepcopy(will)
     will = will.replace("\#name\#", check(d['name']))
     will = will.replace("\#dependent\#", check(d['dependent']))
     will = will.replace("\#address\#", check(d['address']))
     will = will.replace("\#age\#", check(d['age']))
     will = will.replace("\#date\#", datetime.now().strftime(format("%A, %dth of %B, %Y")))
+
+    propsfil = r""" """
+    if len(d['properties']):
+        propsfil += r"""
+\newpage
+        """
+        for i in range(len(d['properties'])):
+            propin = d['properties'][i+1]
+            proptemp = copy.deepcopy(prop)
+            proptemp = proptemp.replace("\#benefactor\#", check(propin['beneficiary']))
+            if propin['type'] == u'res':
+                proptemp = proptemp.replace("\#rescom\#", ur"residential")
+            else:
+                proptemp = proptemp.replace("\#rescom\#", ur"commercial")
+            proptemp = proptemp.replace("\#propaddress\#", check(propin['address']))
+            propsfil += proptemp
+    print propsfil
+    will = will.replace("\#props\#", propsfil)
+
     return latex2pdf(will)
 
