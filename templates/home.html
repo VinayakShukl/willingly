@@ -177,7 +177,19 @@
                                 </div>
 
                                 <div class="input-control textarea" data-role="input-control">
-                                    <input type="file" name="pic" accept="image/*">
+                                    <img id="uploadPreview" style="width: 100px; height: 100px;" />
+                                    <input id='jewel_img' type="file" name="pic" accept="image/*" onchange="PreviewImage();">
+                                    <script>
+                                        function PreviewImage() {
+                                            var oFReader = new FileReader();
+                                            oFReader.readAsDataURL(document.getElementById("jewel_img").files[0]);
+
+                                            oFReader.onload = function (oFREvent) {
+                                                document.getElementById("uploadPreview").src = oFREvent.target.result;
+                                            };
+                                        }
+                                        ;
+                                    </script>
                                 </div>
                                 <br/>
                                 <br/>
